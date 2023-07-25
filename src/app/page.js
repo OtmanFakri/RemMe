@@ -9,6 +9,7 @@ import points from "../../icons/points.svg";
 import moment from 'moment';
 
 import FormExport from "@/app/components/FormExport";
+import {searchDataByTitle} from "@/app/searchDataByTitle";
 
 
 const Home = () => {
@@ -17,7 +18,12 @@ const Home = () => {
     const [visible, setVisible] = useState(false);
     const [Dataofday, setDataofday] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const formRef = useRef(null);
+
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleInputChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
 
 
     // Sample event data
@@ -25,10 +31,11 @@ const Home = () => {
 
         {
             title: 'Event 1',
-            type: 'import',
+            type: 'Exports',
             start: '2023-07-20',
             end: '2023-07-27',
         },
+
         {
             title: 'Event 2',
             type: 'import',
@@ -38,6 +45,11 @@ const Home = () => {
 
 
     ];
+
+    const handleSearch = (titleToSearch) => {
+        const searchResult = searchDataByTitle(Dataofday, titleToSearch);
+        console.log(searchResult);
+    };
 
     const onSelect = (newValue) => {
         setValue(newValue);
@@ -84,6 +96,10 @@ const Home = () => {
         setIsModalVisible(false);
     };
 
+    const filteredData = searchQuery
+        ? searchDataByTitle(Dataofday, searchQuery)
+        : Dataofday;
+
     const menu = (
         <Menu onClick={(e) => handleMenuClick(e)}>
             <Menu.Item  key="1">Exports</Menu.Item>
@@ -118,7 +134,13 @@ const Home = () => {
                 size={'large'}
             >
                 <div className={"space-y-3"}>
-                    {Dataofday.map((item, index) => (
+                    <input type="text"
+                           onChange={handleInputChange}
+                           value={searchQuery}
+                           placeholder="Search ..."
+                           className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"/>
+
+                    {filteredData.map((item, index) => (
                         <Cartb key={index} event={item} />
                     ))}
                 </div>
@@ -130,7 +152,7 @@ const Home = () => {
                 footer={null}
                 onCancel={handleModalCancel}
             >
-               <FormExport ref={formRef} />
+               <FormExport  />
             </Modal>
 
             <Modal
