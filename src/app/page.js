@@ -1,15 +1,22 @@
 'use client';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Calendar, Drawer, Dropdown, Menu, Modal, Space} from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import Cartb from "../app/components/Carditem";
-import points from "../../icons/points.svg";
 import moment from 'moment';
 
 import FormExport from "@/app/components/FormExport";
 import {searchDataByTitle} from "@/app/searchDataByTitle";
+
+import {atom, useAtom} from 'jotai';
+
+
+import EventController from "@/app/Exports /ControllerEcports";
+import {selector, useRecoilValue} from "recoil";
+import {EventExport, EventExports, filteredEventsSelector, getExport} from "@/app/Exports /ModelExports";
+import {getTodoList} from "@/app/pages/actionTodo";
 
 
 const Home = () => {
@@ -18,33 +25,24 @@ const Home = () => {
     const [visible, setVisible] = useState(false);
     const [Dataofday, setDataofday] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [Exporte, setExporte] = useAtom(EventExports);
 
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
 
+
     // Sample event data
-    const events = [
-
-        {
-            title: 'Event 1',
-            type: 'Exports',
-            start: '2023-07-20',
-            end: '2023-07-27',
-        },
-
-        {
-            title: 'Event 2',
-            type: 'import',
-            start: '2023-07-20',
-            end: '2023-07-25',
-        }
-
-
-    ];
+    useEffect(() => {
+        const fetchAndSetEvents = async () => {
+            const data = await getExport();
+            setExporte(data);
+        };
+        fetchAndSetEvents();
+    }, []);
 
     const handleSearch = (titleToSearch) => {
         const searchResult = searchDataByTitle(Dataofday, titleToSearch);
@@ -65,7 +63,7 @@ const Home = () => {
         setSelectedDate(value);
         setVisible(true);
 
-        setDataofday(events.filter((event) => date >= event.start && date <= event.end));
+        setDataofday(Exporte.filter((event) => date >= event.start && date <= event.end));
     };
     const handleCloseDrawer = () => {
         setVisible(false);
@@ -73,7 +71,7 @@ const Home = () => {
 
     const dateCellRender = (date) => {
         const dateString = date.format('YYYY-MM-DD');
-        const eventList = events.filter(
+        const eventList = Exporte.filter(
             (event) =>
                 moment(dateString).isBetween(event.start, event.end, 'day', '[]')
         );

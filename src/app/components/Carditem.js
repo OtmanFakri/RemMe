@@ -1,29 +1,55 @@
 import Image from "next/image";
 import points from "../../../icons/points.svg";
-import React from "react";
+import React, {useEffect} from "react";
 import {Dropdown, Menu} from "antd";
+import {EventExports, updateExporteCompleted, updateExporteCompleted2,} from "@/app/Exports /ModelExports";
+import {useAtom} from "jotai";
+import {RecoilRoot} from "recoil";
 
-const options = ["Complete", "Delete", "Reply"];
+
 
 
 const Cartb =({event}) =>{
+
+
+
     const handleMenuClick = (e) => {
-        // Handle menu item click here
         console.log("Clicked:", e.key);
     };
+    const [Export,setExporte] = useAtom(EventExports);
+
+
+
+
+    const handleUpdateTodo = () => {
+        const updatedExports = updateExporteCompleted(event.id);
+        setExporte(updatedExports);
+    };
+    const currentEvent = Export.find((ev) => ev.id === event.id);
+
     const menu = (
         <Menu onClick={handleMenuClick}>
-            {options.map((option) => (
-                <Menu.Item key={option}>{option}</Menu.Item>
-            ))}
+            <Menu.Item
+                onClick={() => handleUpdateTodo()}
+                key={event.id} >Complete
+            </Menu.Item>
+            <Menu.Item key='2'>Delete</Menu.Item>
+            <Menu.Item key='3'>Reply</Menu.Item>
+
         </Menu>
     );
     return(
-        <div className={`w-full h-[84px] relative rounded-lg ${event.type === 'Exports' ? 'bg-orange-200' : 'bg-green-200'}`}>
+        <div className={`w-full h-[84px] relative rounded-lg ${
+            currentEvent.completed
+                ? 'bg-slate-500'
+                : event.type === 'Imports'
+                    ? 'bg-orange-200'
+                    : 'bg-green-200'
+        }`}>
             <div className="w-[225px] left-[15px] top-[15px] absolute flex justify-start items-center">
                 <div className="pr-[9px] flex justify-start items-start">
                     <div className="text-neutral-800 text-sm font-normal leading-none">
-                        {event.title}
+                        {event.title} - {currentEvent.completed ? "Completed" : "not Completed" }
                     </div>
                 </div>
             </div>
@@ -37,6 +63,7 @@ const Cartb =({event}) =>{
                 </Dropdown>
             </div>
         </div>
+
     )
 }
 export  default Cartb;
