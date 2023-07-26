@@ -10,13 +10,14 @@ import moment from 'moment';
 import FormExport from "@/app/components/FormExport";
 import {searchDataByTitle} from "@/app/searchDataByTitle";
 
-import {atom, useAtom} from 'jotai';
+import {atom, useAtom, useAtomValue} from 'jotai';
 
 
 import EventController from "@/app/Exports /ControllerEcports";
 import {selector, useRecoilValue} from "recoil";
-import {EventExport, EventExports, filteredEventsSelector, getExport} from "@/app/Exports /ModelExports";
+import {EventExport, EventExports, EventExports2, filteredEventsSelector, getExport} from "@/app/Exports /ModelExports";
 import {getTodoList} from "@/app/pages/actionTodo";
+import FormImport from "@/app/components/FormImport";
 
 
 const Home = () => {
@@ -27,8 +28,9 @@ const Home = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const [Exporte, setExporte] = useAtom(EventExports);
+    //const [Exporte, setExporte] = useAtom(EventExports);
 
+    const Exporte = useAtomValue(EventExports2)
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
@@ -36,13 +38,6 @@ const Home = () => {
 
 
     // Sample event data
-    useEffect(() => {
-        const fetchAndSetEvents = async () => {
-            const data = await getExport();
-            setExporte(data);
-        };
-        fetchAndSetEvents();
-    }, []);
 
     const handleSearch = (titleToSearch) => {
         const searchResult = searchDataByTitle(Dataofday, titleToSearch);
@@ -160,7 +155,7 @@ const Home = () => {
                 cancelButtonProps={{ style: { display: 'none' } }} // Hide the default Cancel button
                 onCancel={handleModalCancel}
             >
-                <p>Modal has 2 content goes here</p>
+                <FormImport  />
             </Modal>
         </div>
     );

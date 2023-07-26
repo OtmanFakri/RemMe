@@ -1,5 +1,35 @@
 import {atomWithImmer} from "jotai-immer";
 import { produce } from 'jotai-immer';
+import {useSetRecoilState} from "recoil";
+import {atom} from "jotai";
+
+
+
+
+export const EventExports2 = atom([
+    { id: 1, title: 'Event 11', type: 'Exports', start: '2023-07-20', completed: false, end: '2023-07-27',
+        reply :[
+            { id: 1, title: 'REvent 11', type: 'Exports', start: '2023-07-20', completed: false, end: '2023-07-27' },
+            { id: 2, title: 'REvent 12', type: 'Imports', start: '2023-07-20', completed: false, end: '2023-07-27' },
+        ] },
+    { id: 2, title: 'Event 2', type: 'Imports', start: '2023-07-20', completed: false, end: '2023-07-27' }]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const EventExports = atomWithImmer([
 ]);
@@ -18,5 +48,13 @@ export const updateExporteCompleted = (id) => (state) => {
         console.log(todo.title,todo.completed);
         todo.completed = !todo.completed;
     }
+};
+export const addNewExport = (newExport) => {
+
+    const setExports = useSetRecoilState(EventExports);
+    console.log(getExport());
+    setExports((prevExports) => {
+        return [...prevExports, newExport];
+    });
 };
 

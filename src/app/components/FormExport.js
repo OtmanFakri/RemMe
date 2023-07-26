@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {addNewExport} from "@/app/Exports /ModelExports";
 
 
 const FormExport = () => {
@@ -29,6 +30,7 @@ const FormExport = () => {
 
         // Handle form submission here
         console.log('Form data:', formData);
+        addNewExport(formData);
     };
 
     const handleNoteChange = (index, value) => {
