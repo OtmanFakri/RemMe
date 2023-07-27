@@ -1,23 +1,9 @@
-import EventModel, {EventExport} from "@/app/Exports /ModelExports";
-import {useAtom, useSetAtom} from "jotai";
-import {updateTodoTitleGoal} from "@/app/pages/actionTodo";
 
 
+import { collection, addDoc } from "firebase/firestore";
+import {db} from "@/app/Conf/conf";
 
 
-export const ExporteController = (index) => {
-    const [todos, setTodos] = useAtom(EventExport);
-
-    const updateTodo = (index) => {
-        setTodos((state) => {
-            state[index].completed = !state[index].completed;
-            return state;
-        });
-
-    };
-
-
-}
 const EventController = {
 
     getEvents: () => {
@@ -25,5 +11,16 @@ const EventController = {
     },
 }
 
+
+export const addExports = async (todo) => {
+    try {
+        const docRef = await addDoc(collection(db, "Exports"),
+            todo,
+        );
+        console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+}
 
 export default EventController;

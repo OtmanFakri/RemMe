@@ -1,9 +1,12 @@
-import {useEffect, useState} from "react";
-import {Button, DatePicker, Form, Input, message} from "antd";
+import { DatePicker, Form, Input, message} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import {addNewExport, CurrentDataSelected, EventExports2} from "@/app/Exports /ModelExports";
+import {CurrentDataSelected, EventExports2} from "@/app/Exports /ModelExports";
 import {useAtomValue, useSetAtom} from "jotai";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import moment from "moment";
+import appdb from "@/app/Conf/conf";
+import {addExports, addTodo} from "@/app/Exports /ControllerEcports";
 
 
 const FormImport = ({SelectData}) => {
@@ -22,10 +25,17 @@ const FormImport = ({SelectData}) => {
 
 
 
+
     const success = () => {
         messageApi.open({
             type: 'success',
-            content: 'This is a success Add',
+            content: 'Data saved successfully 🎉',
+        });
+    };
+    const error = (e) => {
+        messageApi.open({
+            type: 'error',
+            content: e.message,
         });
     };
 
@@ -33,8 +43,17 @@ const FormImport = ({SelectData}) => {
         SetExporte((prev)=>[
             ...prev,
             {id: 3, title: "object", type: 'Exports', start: '2023-07-20', completed: true, end: '2023-07-27' }]);
-        success()
-        console.log('Form values:', values);
+
+        addExports({
+            title: values.textValue,
+            type: 'Exports',
+            start: values.dateStart,
+            completed: true,
+            end: values.dateEnd,
+            Number: values.Number,
+            textareaValue: values.textareaValue,
+        }).then(r => success())
+            .catch(e => error(e))
     };
 
     const validateDateRange = (_, value) => {
