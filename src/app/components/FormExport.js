@@ -1,15 +1,30 @@
 import {useState} from "react";
-import {addNewExport} from "@/app/Exports /ModelExports";
+import {addNewExport, EventExports2} from "@/app/Exports /ModelExports";
+import {useAtomValue, useSetAtom} from "jotai";
+import {message} from "antd";
+import moment from "moment";
 
 
-const FormExport = () => {
+const FormExport = ({SelectData}) => {
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'This is a success Add',
+        });
+    };
 
     const [formData, setFormData] = useState({
-        date: '',
+        date: SelectData,
         receiver: '',
         object: '',
-        notes: [{ number: 1, dateOfNote: '' }],
+        notes: [
+            { number: 1, dateOfNote: '' }
+        ],
     });
+
+    const SetExporte = useSetAtom(EventExports2)
 
 
     const handleSubmit = (e) => {
@@ -29,8 +44,11 @@ const FormExport = () => {
         }
 
         // Handle form submission here
+        SetExporte((prev)=>[
+            ...prev,
+            {id: 3, title: formData.object, type: 'Exports', start: formData.date, completed: true, end: '2023-07-27' }]);
+        success()
         console.log('Form data:', formData);
-        addNewExport(formData);
     };
 
     const handleNoteChange = (index, value) => {
@@ -41,7 +59,10 @@ const FormExport = () => {
 
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+            defaultValue={SelectData}
+            onSubmit={handleSubmit} className="space-y-4">
+            {contextHolder}
             <div>
                 <label htmlFor="date" className="block font-medium">
                     Date:
@@ -49,8 +70,9 @@ const FormExport = () => {
                 <input
                     type="date"
                     id="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    defaultValue={SelectData}
+                    value={SelectData}
+                    //onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"                />
             </div>
             <div>

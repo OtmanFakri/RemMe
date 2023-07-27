@@ -8,16 +8,17 @@ const { Panel } = Collapse;
 
 const TabsDetails = ({ event }) => (
 
-    <Tabs defaultActiveKey="1" onChange={onChange}>
+    <Tabs  onChange={onChange}>
         <TabPane tab="Details" key={event.id}>
             <h2>title: {event.title}</h2>
+            <h2>Completed: {event.completed ? "completed" : "Not Completed"}</h2>
         </TabPane>
 
-        <TabPane tab="Replay" key={2 } >
+        <TabPane tab="Replay" key={3} >
             {
                 event.reply.map((item)=>{
                     return (
-                        <Collapse className={" space-x-10 space-y-10"}>
+                        <Collapse className={" my-4"}>
                             <Panel header={item.title} key={item.id}>
                                 <h3 >{item.title}</h3>
                                 <p>{item.type}</p>

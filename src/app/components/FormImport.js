@@ -1,23 +1,55 @@
-import {useState} from "react";
-import {Button, DatePicker, Form, Input} from "antd";
+import {useEffect, useState} from "react";
+import {Button, DatePicker, Form, Input, message} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import {addNewExport} from "@/app/Exports /ModelExports";
+import {addNewExport, CurrentDataSelected, EventExports2} from "@/app/Exports /ModelExports";
+import {useAtomValue, useSetAtom} from "jotai";
+import moment from "moment";
 
 
-const FormImport = () => {
+const FormImport = ({SelectData}) => {
     const { RangePicker } = DatePicker;
+    const SetExporte = useSetAtom(EventExports2)
+
+    const nn=SelectData;
+
+    const currentDataSelected = useAtomValue(CurrentDataSelected)
+
+    const formattedDate = moment.isMoment(currentDataSelected)
+        ? currentDataSelected.format('YYYY-MM-DD')
+        : null
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'This is a success Add',
+        });
+    };
+
     const handleFormSubmit = (values) => {
-        const newExport = { id: 3, title: 'Event 3', type: 'Exports', start: '2023-07-30', completed: false, end: '2023-08-06' };
-        addNewExport(newExport);
+        SetExporte((prev)=>[
+            ...prev,
+            {id: 3, title: "object", type: 'Exports', start: '2023-07-20', completed: true, end: '2023-07-27' }]);
+        success()
         console.log('Form values:', values);
     };
 
     const validateDateRange = (_, value) => {
-        if (!value || value.length !== 2) {
-            return Promise.reject('Date Range is required');
+
+        const [startDate, endDate] = value;
+        if (!moment(startDate) || !moment(endDate)) {
+            return Promise.reject('Both Start Date and End Date are required');
         }
+        if (moment(startDate) < moment(endDate)) {
+            return Promise.reject('Start Date must be before End Date');
+        }
+
         return Promise.resolve();
     };
+
 
     const validateField = (_, value, field) => {
         if (!value) {
@@ -28,19 +60,41 @@ const FormImport = () => {
 
     return (
         <>
+            {contextHolder}
+
             <Form
+                initialValues={{
+                    dateStart: SelectData, // Replace with your default start date
+                    dateEnd: null, // Replace with your default end date
+                }}
                 onFinish={handleFormSubmit}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 16 }}
                 className="p-4 space-y-4"
             >
                 <Form.Item
-                    name="dateRange"
-                    label="Date Range"
+                    name="dateStart"
+                    label="DateStart"
                     rules={[{ validator: validateDateRange }]}
                 >
-                    <RangePicker className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                    <Input
+                        defaultValue={SelectData}
+                        type="date"
+                        value={SelectData}
+                        className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
                 </Form.Item>
+                <Form.Item
+                    name="dateEnd"
+                    label="DateEnd"
+                    rules={[{ validator: validateDateRange }]}
+                >
+                    <Input
+                        //defaultValue={formattedDate}
+                        type="date"
+                        value={null}
+                        className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                </Form.Item>
+
                 <Form.Item
                     name="Number"
                     label="Number"

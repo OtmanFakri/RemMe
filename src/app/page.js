@@ -10,12 +10,19 @@ import moment from 'moment';
 import FormExport from "@/app/components/FormExport";
 import {searchDataByTitle} from "@/app/searchDataByTitle";
 
-import {atom, useAtom, useAtomValue} from 'jotai';
+import {atom, useAtom, useAtomValue, useSetAtom} from 'jotai';
 
 
 import EventController from "@/app/Exports /ControllerEcports";
 import {selector, useRecoilValue} from "recoil";
-import {EventExport, EventExports, EventExports2, filteredEventsSelector, getExport} from "@/app/Exports /ModelExports";
+import {
+    CurrentDataSelected,
+    EventExport,
+    EventExports,
+    EventExports2,
+    filteredEventsSelector,
+    getExport
+} from "@/app/Exports /ModelExports";
 import {getTodoList} from "@/app/pages/actionTodo";
 import FormImport from "@/app/components/FormImport";
 
@@ -28,7 +35,11 @@ const Home = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
+    //const [currentDataSelected, SetCurrentDataSelected] = useAtom(CurrentDataSelected);
     //const [Exporte, setExporte] = useAtom(EventExports);
+
+    const SetCurrentDataSelected = useSetAtom(CurrentDataSelected)
+
 
     const Exporte = useAtomValue(EventExports2)
     const handleInputChange = (event) => {
@@ -47,6 +58,9 @@ const Home = () => {
     const onSelect = (newValue) => {
         setValue(newValue);
         setSelectedDate(newValue);
+        SetCurrentDataSelected(newValue);
+
+
     };
 
     const onPanelChange = (newValue) => {
@@ -57,7 +71,7 @@ const Home = () => {
         const date = value.format('YYYY-MM-DD');
         setSelectedDate(value);
         setVisible(true);
-
+        SetCurrentDataSelected(value);
         setDataofday(Exporte.filter((event) => date >= event.start && date <= event.end));
     };
     const handleCloseDrawer = () => {
@@ -102,12 +116,16 @@ const Home = () => {
     );
     return (
         <div>
+            <div className={"w-full h-10 bg-red-400"}>
+                <h1>Eventascnascnnasocnoancion</h1>
+            </div>
             <div className="w-full h-screen flex justify-center items-center">
                 <Calendar
                     value={value}
                     onPanelChange={onPanelChange}
                     dateCellRender={dateCellRender}
                     onSelect={handleDateCellClick}
+                    onChange={onSelect}
                 />
             </div>
             <Drawer
@@ -145,7 +163,7 @@ const Home = () => {
                 footer={null}
                 onCancel={handleModalCancel}
             >
-               <FormExport  />
+               <FormExport  SelectData={selectedDate ? selectedDate.format('YYYY-MM-DD') : null} />
             </Modal>
 
             <Modal
@@ -155,7 +173,7 @@ const Home = () => {
                 cancelButtonProps={{ style: { display: 'none' } }} // Hide the default Cancel button
                 onCancel={handleModalCancel}
             >
-                <FormImport  />
+                <FormImport SelectData={selectedDate ? selectedDate.format('YYYY-MM-DD') : null} />
             </Modal>
         </div>
     );

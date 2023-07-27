@@ -11,6 +11,8 @@ import {
 import {useAtom, useAtomValue, useSetAtom} from "jotai";
 import {RecoilRoot} from "recoil";
 import TabsDetails from "@/app/components/tabsDeatils";
+import FormExport from "@/app/components/FormExport";
+import FormImport from "@/app/components/FormImport";
 
 
 
@@ -46,6 +48,17 @@ const Cartb =({event}) =>{
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [isModalOpenExport, setIsModalOpenExport] = useState(false);
+    const [isModalOpenImport, setIsModalOpenImport] = useState(false);
+
+
+    const handleExportClick = () => {
+        setIsModalOpenExport(!isModalOpenExport);
+    };
+
+    const handleImportClick = () => {
+        setIsModalOpenImport(!isModalOpenImport);
+    };
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -57,13 +70,21 @@ const Cartb =({event}) =>{
         <Menu onClick={handleMenuClick}>
             <Menu.Item
                 onClick={() => handleUpdateTodo()}
-                key={event.id} >Complete
+                key={event.id} > {currentEvent.completed ?"Not completed": "completed" }
             </Menu.Item>
             <Menu.Item key='2'>Delete</Menu.Item>
             <Menu.Item
                 onClick={showModal}
                 key='3'>View</Menu.Item>
-            <Menu.Item key='4'>Reply</Menu.Item>
+
+
+            <Menu.Item
+                onClick={
+                currentEvent.type === 'Imports'
+                        ? handleImportClick
+                        : handleExportClick
+                }
+                key='4'>Reply</Menu.Item>
 
         </Menu>
     );
@@ -73,13 +94,14 @@ const Cartb =({event}) =>{
             currentEvent.completed
                 ? 'bg-slate-500'
                 : currentEvent.type === 'Imports'
-                    ? 'bg-orange-200'
-                    : 'bg-green-200'
+                    ? 'bg-green-200'
+                    : 'bg-orange-200'
+                    
         }`}>
             <div className="w-[225px] left-[15px] top-[15px] absolute flex justify-start items-center">
                 <div className="pr-[9px] flex justify-start items-start">
                     <div className="text-neutral-800 text-sm font-normal leading-none">
-                        {event.title} - {event.completed ? "Completed" : "not Completed" }
+                        {event.title} - {currentEvent.completed ? "Completed" : "not Completed" }
                     </div>
                 </div>
             </div>
@@ -101,6 +123,22 @@ const Cartb =({event}) =>{
             >
                 <TabsDetails event={currentEvent}  />
             </Modal>
+
+            {currentEvent.type === 'Imports' ? (
+                <Modal
+                    title="Reply to Export"
+                    footer={null}
+                    visible={isModalOpenImport} onCancel={() => setIsModalOpenImport(false)}>
+                    <FormExport />
+                </Modal>
+            ) : (
+                <Modal
+                    title="Reply to Import"
+                    footer={null}
+                    visible={isModalOpenExport} onCancel={() => setIsModalOpenExport(false)}>
+                    <FormImport />
+                </Modal>
+            )}
         </div>
 
 
