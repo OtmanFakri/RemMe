@@ -35,18 +35,6 @@ export const addImport = async (todo) => {
     }
 }
 
-export const  fetchPost = async () => {
-    const setEvent = useSetAtom(EventExports2)
-
-    await getDocs(collection(db, "Imports"))
-        .then((querySnapshot)=>{
-            const newData = querySnapshot.docs
-                .map((doc) => ({...doc.data(), id:doc.id }));
-            setEvent(newData);
-            //console.log(todos, newData);
-        })
-
-}
 
 
 export default EventController;

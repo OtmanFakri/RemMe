@@ -70,7 +70,8 @@ const Cartb =({event}) =>{
         <Menu onClick={handleMenuClick}>
             <Menu.Item
                 onClick={() => handleUpdateTodo()}
-                key={event.id} > {currentEvent.completed ?"Not completed": "completed" }
+                key={event.id} > {
+                currentEvent.completed ?"Not completed": "completed" }
             </Menu.Item>
             <Menu.Item key='2'>Delete</Menu.Item>
             <Menu.Item
@@ -101,7 +102,7 @@ const Cartb =({event}) =>{
             <div className="w-[225px] left-[15px] top-[15px] absolute flex justify-start items-center">
                 <div className="pr-[9px] flex justify-start items-start">
                     <div className="text-neutral-800 text-sm font-normal leading-none">
-                        {event.title} - {currentEvent.completed ? "Completed" : "not Completed" }
+                        {currentEvent.title} - {currentEvent.completed ? "Completed" : "not Completed" }
                     </div>
                 </div>
             </div>

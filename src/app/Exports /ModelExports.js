@@ -7,7 +7,6 @@ import {atom} from "jotai";
 
 
 export const EventExports2 = atom([
-
 ]);
 
 

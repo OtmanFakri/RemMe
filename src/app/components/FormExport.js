@@ -23,10 +23,12 @@ const FormExport = ({SelectData}) => {
     };
 
     const [formData, setFormData] = useState({
-        date: SelectData,
+        start: SelectData,
+        end: SelectData,
         receiver: '',
-        object: '',
+        title: '',
         type: 'Exports',
+        completed: false,
         reply:[],
         notes: [
             { number: 1, dateOfNote: '' }
@@ -40,27 +42,27 @@ const FormExport = ({SelectData}) => {
         e.preventDefault();
 
         // Check if all fields are filled
-        if (!formData.date || !formData.receiver || !formData.object) {
+        if (!formData.start || !formData.receiver || !formData.title) {
             alert("Please fill out all fields.");
             return;
         }
 
         // Check if the date is in the past
         const currentDate = new Date().toISOString().split("T")[0];
-        if (formData.date > currentDate) {
+        if (formData.start > currentDate) {
             alert("Date must be in the past.");
             return;
         }
 
-        // Handle form submission here
-        SetExporte((prev)=>[
-            ...prev,
-            {id: 3, title: formData.object, type: 'Exports', start: formData.date, completed: true, end: '2023-07-27' }]);
+        console.log(formData)
+
 
         addExports({
             ...formData
         }).then(r => success())
             .catch(e => error(e))
+
+
     };
 
     const handleNoteChange = (index, value) => {
@@ -105,8 +107,8 @@ const FormExport = ({SelectData}) => {
                 <textarea
 
                     id="object"
-                    value={formData.object}
-                    onChange={(e) => setFormData({ ...formData, object: e.target.value })}
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     className="block mt-2 w-full  placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-4 h-32 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"/>
             </div>
             <div>

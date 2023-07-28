@@ -51,14 +51,21 @@ const Home = () => {
 
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'Imports'), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, 'Exports'), (querySnapshot) => {
             const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-            setEvent(newData);
-            console.log('todos', newData);
+            setEvent((prevData) => [...prevData, ...newData]);
+        });
+        const unsubscribe2 = onSnapshot(collection(db, 'Imports'), (querySnapshot) => {
+            const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            setEvent((prevData) => [...prevData, ...newData]);
         });
 
-        return () => unsubscribe();
-    }, [setEvent]);    const handleInputChange = (event) => {
+        return () => {
+            unsubscribe();
+            unsubscribe2();
+        };
+    }, [setEvent]);
+    const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
@@ -146,14 +153,14 @@ const Home = () => {
             </div>
             <Drawer
                 title={
-                <div className={'flex flex-row justify-between'}>
-                    <p>Events on {selectedDate ? selectedDate.format('MMMM Do, YYYY') : ''}</p>
-                    <Dropdown  onClick={(e) => e.preventDefault()} overlay={menu} placement="bottomLeft" trigger={['click']}>
-                        <button className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                             <i className="fas fa-caret-down"> + </i>
-                        </button>
-                    </Dropdown>
-                </div>}
+                    <div className={'flex flex-row justify-between'}>
+                        <p>Events on {selectedDate ? selectedDate.format('MMMM Do, YYYY') : ''}</p>
+                        <Dropdown  onClick={(e) => e.preventDefault()} overlay={menu} placement="bottomLeft" trigger={['click']}>
+                            <button className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+                                <i className="fas fa-caret-down"> + </i>
+                            </button>
+                        </Dropdown>
+                    </div>}
                 placement="right"
                 closable={false}
                 onClose={handleCloseDrawer}
@@ -179,7 +186,7 @@ const Home = () => {
                 footer={null}
                 onCancel={handleModalCancel}
             >
-               <FormExport  SelectData={selectedDate ? selectedDate.format('YYYY-MM-DD') : null} />
+                <FormExport  SelectData={selectedDate ? selectedDate.format('YYYY-MM-DD') : null} />
             </Modal>
 
             <Modal
