@@ -7,16 +7,8 @@ import {atom} from "jotai";
 
 
 export const EventExports2 = atom([
-    { id: 1, title: 'Event 11', type: 'Exports', start: '2023-07-20', completed: false, end: '2023-07-27',
-        reply :[
-            { id: 1, title: 'REvent 11', type: 'Exports', start: '2023-07-20', completed: false, end: '2023-07-27' },
-            { id: 2, title: 'REvent 12', type: 'Imports', start: '2023-07-20', completed: false, end: '2023-07-27' },
-        ] },
-    { id: 2, title: 'Event 12', type: 'Imports', start: '2023-07-20', completed: false, end: '2023-07-27',
-        reply :[
-            { id: 1, title: 'REvent 11', type: 'Exports', start: '2023-07-20', completed: false, end: '2023-07-27' },
-            { id: 2, title: 'REvent 12', type: 'Imports', start: '2023-07-20', completed: false, end: '2023-07-27' },
-        ] }]);
+
+]);
 
 
 export const CurrentDataSelected = atom(null);

@@ -3,6 +3,7 @@ import {addNewExport, EventExports2} from "@/app/Exports /ModelExports";
 import {useAtomValue, useSetAtom} from "jotai";
 import {message} from "antd";
 import moment from "moment";
+import {addExports} from "@/app/Exports /ControllerEcports";
 
 
 const FormExport = ({SelectData}) => {
@@ -14,11 +15,19 @@ const FormExport = ({SelectData}) => {
             content: 'This is a success Add',
         });
     };
+    const error = (e) => {
+        messageApi.open({
+            type: 'error',
+            content: e.message,
+        });
+    };
 
     const [formData, setFormData] = useState({
         date: SelectData,
         receiver: '',
         object: '',
+        type: 'Exports',
+        reply:[],
         notes: [
             { number: 1, dateOfNote: '' }
         ],
@@ -47,8 +56,11 @@ const FormExport = ({SelectData}) => {
         SetExporte((prev)=>[
             ...prev,
             {id: 3, title: formData.object, type: 'Exports', start: formData.date, completed: true, end: '2023-07-27' }]);
-        success()
-        console.log('Form data:', formData);
+
+        addExports({
+            ...formData
+        }).then(r => success())
+            .catch(e => error(e))
     };
 
     const handleNoteChange = (index, value) => {

@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import moment from "moment";
 import appdb from "@/app/Conf/conf";
-import {addExports, addTodo} from "@/app/Exports /ControllerEcports";
+import {addExports, addImport, addTodo} from "@/app/Exports /ControllerEcports";
 
 
 const FormImport = ({SelectData}) => {
@@ -40,18 +40,18 @@ const FormImport = ({SelectData}) => {
     };
 
     const handleFormSubmit = (values) => {
-        SetExporte((prev)=>[
-            ...prev,
-            {id: 3, title: "object", type: 'Exports', start: '2023-07-20', completed: true, end: '2023-07-27' }]);
 
-        addExports({
+
+        addImport({
             title: values.textValue,
-            type: 'Exports',
             start: values.dateStart,
-            completed: true,
-            end: values.dateEnd,
             Number: values.Number,
+            end: values.dateEnd,
             textareaValue: values.textareaValue,
+            type: 'Imports',
+            completed: false,
+            reply:[]
+
         }).then(r => success())
             .catch(e => error(e))
     };

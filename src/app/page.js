@@ -1,6 +1,8 @@
 'use client';
 import React, {useEffect, useRef, useState} from 'react';
 import {Calendar, Drawer, Dropdown, Menu, Modal, Space} from 'antd';
+import { onSnapshot } from 'firebase/firestore';
+
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { CheckCircleOutlined } from '@ant-design/icons';
@@ -13,7 +15,7 @@ import {searchDataByTitle} from "@/app/searchDataByTitle";
 import {atom, useAtom, useAtomValue, useSetAtom} from 'jotai';
 
 
-import EventController from "@/app/Exports /ControllerEcports";
+import EventController, {fetchPost} from "@/app/Exports /ControllerEcports";
 import {selector, useRecoilValue} from "recoil";
 import {
     CurrentDataSelected,
@@ -25,6 +27,8 @@ import {
 } from "@/app/Exports /ModelExports";
 import {getTodoList} from "@/app/pages/actionTodo";
 import FormImport from "@/app/components/FormImport";
+import {collection, getDocs} from "firebase/firestore";
+import {db} from "@/app/Conf/conf";
 
 
 const Home = () => {
@@ -42,7 +46,19 @@ const Home = () => {
 
 
     const Exporte = useAtomValue(EventExports2)
-    const handleInputChange = (event) => {
+    const setEvent = useSetAtom(EventExports2)
+    //const [Exporte, setExporte] = useState([]);
+
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, 'Imports'), (querySnapshot) => {
+            const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            setEvent(newData);
+            console.log('todos', newData);
+        });
+
+        return () => unsubscribe();
+    }, [setEvent]);    const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 

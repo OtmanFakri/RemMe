@@ -1,6 +1,8 @@
 import React from 'react';
 import {Collapse, Tabs} from 'antd';
 import TabPane from "antd/es/tabs/TabPane";
+import DetailImport from "@/app/components/DetailImport";
+import DetailExport from "@/app/components/DetailExport";
 const onChange = (key) => {
     console.log(key);
 };
@@ -10,11 +12,12 @@ const TabsDetails = ({ event }) => (
 
     <Tabs  onChange={onChange}>
         <TabPane tab="Details" key={event.id}>
-            <h2>title: {event.title}</h2>
-            <h2>Completed: {event.completed ? "completed" : "Not Completed"}</h2>
+            {
+                event.type === "Imports" ? <DetailImport values={event} /> : <DetailExport values={event} />
+            }
         </TabPane>
 
-        <TabPane tab="Replay" key={3} >
+        <TabPane tab={"Replay "+event.reply.length} key={2} >
             {
                 event.reply.map((item)=>{
                     return (
