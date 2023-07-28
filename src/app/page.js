@@ -53,11 +53,14 @@ const Home = () => {
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, 'Exports'), (querySnapshot) => {
             const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-            setEvent((prevData) => [...prevData, ...newData]);
+            //setEvent((prevData) => [...prevData, ...newData]);
+            setEvent(newData); // Set the state with the new data, replacing the existing data
+
         });
         const unsubscribe2 = onSnapshot(collection(db, 'Imports'), (querySnapshot) => {
             const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
             setEvent((prevData) => [...prevData, ...newData]);
+            //setEvent(newData);
         });
 
         return () => {

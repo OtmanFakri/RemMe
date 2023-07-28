@@ -1,6 +1,6 @@
 
 
-import { collection, addDoc,getDocs } from "firebase/firestore";
+import { collection, addDoc,doc,updateDoc } from "firebase/firestore";
 import {db} from "@/app/Conf/conf";
 import {useSetAtom} from "jotai";
 import {EventExports2} from "@/app/Exports /ModelExports";
@@ -35,6 +35,15 @@ export const addImport = async (todo) => {
     }
 }
 
+export const updateExports = async (id, updatedData) => {
+    try {
+        const exportsRef = doc(db, "Exports", id);
+        await updateDoc(exportsRef, updatedData);
+        console.log("Document updated with ID: ", id);
+    } catch (e) {
+        console.error("Error updating document: ", e);
+    }
+};
 
 
 export default EventController;

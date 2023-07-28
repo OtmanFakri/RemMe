@@ -1,7 +1,7 @@
 import Image from "next/image";
 import points from "../../../icons/points.svg";
 import React, {useEffect, useState} from "react";
-import {Dropdown, Menu, Modal} from "antd";
+import {Dropdown, Menu, message, Modal} from "antd";
 import {
     EventExports,
     EventExports2,
@@ -13,6 +13,7 @@ import {RecoilRoot} from "recoil";
 import TabsDetails from "@/app/components/tabsDeatils";
 import FormExport from "@/app/components/FormExport";
 import FormImport from "@/app/components/FormImport";
+import {updateExports} from "@/app/Exports /ControllerEcports";
 
 
 
@@ -28,24 +29,41 @@ const Cartb =({event}) =>{
 
     const setCompleted  = useSetAtom(EventExports2)
     const Export  = useAtomValue(EventExports2)
-
-
-
-    const handleUpdateTodo = () => {
-        setCompleted((prevList) =>
-            prevList.map((item) => {
-                if (item.id === event.id) {
-                    console.log(item)
-
-                    return { ...item, completed: !event.completed };
-                }
-
-                return item;
-            })
-        );
+    const [messageApi, contextHolder] = message.useMessage();
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'updated successfully',
+        });
     };
+    const error = (e) => {
+        messageApi.open({
+            type: 'error',
+            content: e.message,
+        });
+    };
+
     const currentEvent = Export.find((ev) => ev.id === event.id);
 
+    const handleUpdateTodo = async () => {
+        try {
+            const updateEvent = {
+                ...currentEvent,
+                completed: !currentEvent.completed,
+            };
+
+            await updateExports(currentEvent.id, updateEvent); // Wait for the update operation to complete
+
+            setCompleted((prev) =>
+                prev.map((ev) => (ev.id === currentEvent.id ? updateEvent : ev))
+            );
+           //setCompleted((old) => old.map((ev) => (ev.id === event.id ? updateEvent : ev)));
+            success();
+
+        } catch (error) {
+            error(error);
+        }
+    };
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isModalOpenExport, setIsModalOpenExport] = useState(false);
@@ -91,6 +109,7 @@ const Cartb =({event}) =>{
     );
 
     return(
+
         <div className={`w-full h-[84px] relative rounded-lg ${
             currentEvent.completed
                 ? 'bg-slate-500'
@@ -99,6 +118,8 @@ const Cartb =({event}) =>{
                     : 'bg-orange-200'
                     
         }`}>
+            {contextHolder}
+
             <div className="w-[225px] left-[15px] top-[15px] absolute flex justify-start items-center">
                 <div className="pr-[9px] flex justify-start items-start">
                     <div className="text-neutral-800 text-sm font-normal leading-none">
