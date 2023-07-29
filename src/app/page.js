@@ -3,33 +3,29 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Calendar, Drawer, Dropdown, Menu, Modal, Space} from 'antd';
 import { onSnapshot } from 'firebase/firestore';
 
-import dayjs from 'dayjs';
-import Image from 'next/image';
-import { CheckCircleOutlined } from '@ant-design/icons';
+
 import Cartb from "../app/components/Carditem";
 import moment from 'moment';
+import "./styles.css";
 
 import FormExport from "@/app/components/FormExport";
 import {searchDataByTitle} from "@/app/searchDataByTitle";
 
 import {atom, useAtom, useAtomValue, useSetAtom} from 'jotai';
 
-
-import EventController, {fetchPost} from "@/app/Exports /ControllerEcports";
-import {selector, useRecoilValue} from "recoil";
 import {
     CurrentDataSelected,
-    EventExport,
-    EventExports,
     EventExports2,
-    filteredEventsSelector,
-    getExport
 } from "@/app/Exports /ModelExports";
-import {getTodoList} from "@/app/pages/actionTodo";
 import FormImport from "@/app/components/FormImport";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "@/app/Conf/conf";
 
+import locale from 'antd/es/date-picker/locale/ar_EG';
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/ar-kw';
+dayjs.locale('ar-kw');
 
 const Home = () => {
     const [value, setValue] = useState(dayjs()); // Replace 'dayjs()' with your initial date value
@@ -67,6 +63,8 @@ const Home = () => {
             unsubscribe2();
         };
     }, [setEvent]);
+
+
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
@@ -146,7 +144,9 @@ const Home = () => {
             </div>
             <div className="w-full h-screen flex justify-center items-center">
                 <Calendar
+                    className={"my-calendar arabic"}
                     value={value}
+                    locale={locale}
                     onPanelChange={onPanelChange}
                     dateCellRender={dateCellRender}
                     onSelect={handleDateCellClick}
