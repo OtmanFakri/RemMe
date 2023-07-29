@@ -15,6 +15,7 @@ import FormExport from "@/app/components/FormExport";
 import FormImport from "@/app/components/FormImport";
 import {updateExports} from "@/app/Exports /ControllerEcports";
 import ReplayFormImport from "@/app/components/ReplyFormImport";
+import ReplyFormExport from "@/app/components/ReplyFormExport";
 
 
 
@@ -151,7 +152,7 @@ const Cartb =({event}) =>{
                     title="Reply to Export"
                     footer={null}
                     visible={isModalOpenImport} onCancel={() => setIsModalOpenImport(false)}>
-                    <FormExport type={"reply"} />
+                    <ReplyFormExport event={currentEvent} />
                 </Modal>
             ) : (
                 <Modal

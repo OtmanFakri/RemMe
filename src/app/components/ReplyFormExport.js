@@ -3,10 +3,10 @@ import {addNewExport, EventExports2} from "@/app/Exports /ModelExports";
 import {useAtomValue, useSetAtom} from "jotai";
 import {message} from "antd";
 import moment from "moment";
-import {addExports} from "@/app/Exports /ControllerEcports";
+import {addExports, updateExports} from "@/app/Exports /ControllerEcports";
 
 
-const FormExport = ({event}) => {
+const ReplyFormExport = ({event}) => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const success = () => {
@@ -23,8 +23,8 @@ const FormExport = ({event}) => {
     };
 
     const [formData, setFormData] = useState({
-        start: SelectData,
-        end: SelectData,
+        start: '',
+        end: '',
         receiver: '',
         title: '',
         type: 'Exports',
@@ -35,7 +35,6 @@ const FormExport = ({event}) => {
         ],
     });
 
-    const SetExporte = useSetAtom(EventExports2)
 
 
     const handleSubmit = (e) => {
@@ -54,14 +53,33 @@ const FormExport = ({event}) => {
             return;
         }
 
-        console.log(formData)
+        const replyNew={
+            ...event,
+            reply:[{
+                start: formData.start,
+                end: formData.start,
+                receiver: formData.receiver,
+                title: formData.title,
+                type: 'Exports',
+                completed: true,
+                notes: [
+                    { number: 1, dateOfNote: '' }
+                ],
+            }]
 
+        }
 
+        updateExports(event.id,replyNew,"Imports").then(r=>{
+            success()
+        }).catch(e=>{
+            error(e)
+        })
+        /*
         addExports({
             ...formData
         }).then(r => success())
             .catch(e => error(e))
-
+         */
 
     };
 
@@ -74,7 +92,6 @@ const FormExport = ({event}) => {
 
     return (
         <form
-            defaultValue={SelectData}
             onSubmit={handleSubmit} className="space-y-4">
             {contextHolder}
             <div>
@@ -84,9 +101,9 @@ const FormExport = ({event}) => {
                 <input
                     type="date"
                     id="date"
-                    defaultValue={SelectData}
-                    value={SelectData}
-                    //onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    defaultValue={formData.start}
+                    value={formData.start}
+                    onChange={(e) => setFormData({ ...formData, start: e.target.value })}
                     className="block  mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"                />
             </div>
             <div>
@@ -130,7 +147,7 @@ const FormExport = ({event}) => {
             </div>
             <div className="text-right"> {/* Add this container div with "text-left" class */}
                 <button onSubmit={handleSubmit}
-                    className="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                        className="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
                 >
                     Submit
                 </button>
@@ -139,4 +156,4 @@ const FormExport = ({event}) => {
     );
 };
 
-export default FormExport;
+export default ReplyFormExport;
