@@ -48,11 +48,8 @@ const FormExport = ({SelectData}) => {
         }
 
         // Check if the date is in the past
-        const currentDate = new Date().toISOString().split("T")[0];
-        if (formData.start > currentDate) {
-            alert("Date must be in the past.");
-            return;
-        }
+
+
 
         console.log(formData)
 

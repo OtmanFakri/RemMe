@@ -25,6 +25,7 @@ import locale from 'antd/es/date-picker/locale/ar_EG';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/ar-kw';
+import EventBanner from "@/app/components/EventBanner";
 dayjs.locale('ar-kw');
 
 const Home = () => {
@@ -139,8 +140,8 @@ const Home = () => {
     );
     return (
         <div>
-            <div className={"w-full h-10 bg-red-400"}>
-                <h1>Eventascnascnnasocnoancion</h1>
+            <div>
+                <EventBanner />
             </div>
             <div className="w-full h-screen flex justify-center items-center">
                 <Calendar

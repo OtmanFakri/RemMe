@@ -1,29 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-
+import firebase from 'firebase/compat/app';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import {db} from "@/app/Conf/conf";
 
 
 const EventBanner = () => {
     const [upcomingEvent, setUpcomingEvent] = useState(null);
 
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     useEffect(() => {
         // Function to fetch data from Firestore
         const fetchData = async () => {
             try {
-                const firestore = firebase.firestore();
-                const eventsCollection = firestore.collection('events');
 
                 // Query the Firestore for the event that starts within the next 24 hours
                 const now = new Date();
                 const nextDay = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
-                const querySnapshot = await eventsCollection
-                    .where('start', '>', now)
-                    .where('start', '<', nextDay)
-                    .limit(1)
-                    .get();
+                const eventsCollection = collection(db, 'Exports');
+                const q = query(eventsCollection, where('start', '>', formatDate(now)), where('start', '<', formatDate(nextDay)), limit(1));
+                const querySnapshot = await getDocs(q);
 
+                console.log("data : ",querySnapshot.docs[0].data())
                 // Get the upcoming event data (if available)
                 if (!querySnapshot.empty) {
                     const upcomingEventData = querySnapshot.docs[0].data();
