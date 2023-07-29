@@ -14,6 +14,7 @@ import TabsDetails from "@/app/components/tabsDeatils";
 import FormExport from "@/app/components/FormExport";
 import FormImport from "@/app/components/FormImport";
 import {updateExports} from "@/app/Exports /ControllerEcports";
+import ReplayFormImport from "@/app/components/ReplyFormImport";
 
 
 
@@ -52,7 +53,7 @@ const Cartb =({event}) =>{
                 completed: !currentEvent.completed,
             };
 
-            await updateExports(currentEvent.id, updateEvent); // Wait for the update operation to complete
+            await updateExports(currentEvent.id, updateEvent,currentEvent.type); // Wait for the update operation to complete
 
             setCompleted((prev) =>
                 prev.map((ev) => (ev.id === currentEvent.id ? updateEvent : ev))
@@ -76,6 +77,7 @@ const Cartb =({event}) =>{
 
     const handleImportClick = () => {
         setIsModalOpenImport(!isModalOpenImport);
+
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -95,8 +97,6 @@ const Cartb =({event}) =>{
             <Menu.Item
                 onClick={showModal}
                 key='3'>View</Menu.Item>
-
-
             <Menu.Item
                 onClick={
                 currentEvent.type === 'Imports'
@@ -151,14 +151,14 @@ const Cartb =({event}) =>{
                     title="Reply to Export"
                     footer={null}
                     visible={isModalOpenImport} onCancel={() => setIsModalOpenImport(false)}>
-                    <FormExport />
+                    <FormExport type={"reply"} />
                 </Modal>
             ) : (
                 <Modal
                     title="Reply to Import"
                     footer={null}
                     visible={isModalOpenExport} onCancel={() => setIsModalOpenExport(false)}>
-                    <FormImport />
+                    <ReplayFormImport event={currentEvent}  />
                 </Modal>
             )}
         </div>

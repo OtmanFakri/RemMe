@@ -35,9 +35,9 @@ export const addImport = async (todo) => {
     }
 }
 
-export const updateExports = async (id, updatedData) => {
+export const updateExports = async (id, updatedData,type) => {
     try {
-        const exportsRef = doc(db, "Exports", id);
+        const exportsRef = doc(db, type, id);
         await updateDoc(exportsRef, updatedData);
         console.log("Document updated with ID: ", id);
     } catch (e) {
