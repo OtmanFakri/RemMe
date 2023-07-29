@@ -18,21 +18,20 @@ const EventBanner = () => {
         // Function to fetch data from Firestore
         const fetchData = async () => {
             try {
+                const now = new Date();
+                const next24Hours = new Date(now);
+                next24Hours.setHours(next24Hours.getHours() + 24);
 
                 // Query the Firestore for the event that starts within the next 24 hours
-                const now = new Date();
-                const nextDay = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-
                 const eventsCollection = collection(db, 'Exports');
-                const q = query(eventsCollection, where('start', '>', formatDate(now)), where('start', '<', formatDate(nextDay)), limit(1));
+                const q = query(eventsCollection, where('start', '>=', now.toISOString()), where('start', '<', next24Hours.toISOString()));
                 const querySnapshot = await getDocs(q);
 
-                console.log("data : ",querySnapshot.docs[0].data())
                 // Get the upcoming event data (if available)
                 if (!querySnapshot.empty) {
-                    const upcomingEventData = querySnapshot.docs[0].data();
-                    setUpcomingEvent(upcomingEventData);
-                }
+                    const upcomingEventData = querySnapshot.docs.map(doc => doc.data());
+                    setUpcomingEvent(upcomingEventData)
+                };
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -44,9 +43,14 @@ const EventBanner = () => {
     // Function to display the banner if there is an upcoming event
     const renderEventBanner = () => {
         if (upcomingEvent) {
+            console.log(upcomingEvent);
             return (
                 <div>
-                    <h2>{upcomingEvent.title}</h2>
+                    {upcomingEvent.map((event) => (
+                        <div key={event.id}>
+                            <h3>{event.title}</h3>
+                        </div>
+                    ))}
                     <p>The event is starting within the next 24 hours!</p>
                 </div>
             );
