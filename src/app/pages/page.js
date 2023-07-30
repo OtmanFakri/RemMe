@@ -1,10 +1,16 @@
 "use client";
+import "slick-carousel/slick/slick.css";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import HomeTEt from "@/app/Home";
+
+
 const events = [
     {
         id: 1,
         title: 'Event 11',
         type: 'Exports',
-        start: '2023-07-30',
+        start: '2023-07-31',
         completed: false,
         end: '2023-07-27',
         reply: [
@@ -26,11 +32,12 @@ const events = [
             }
         ]
     },
+
     {
         id: 2,
         title: 'Event 12',
         type: 'Imports',
-        start: '2023-07-20',
+        start: '2023-07-31',
         completed: false,
         end: '2023-07-27',
         reply: [
@@ -68,29 +75,31 @@ function getUpcomingEvents(events) {
 function UpcomingEvents() {
     const upcomingEvents = getUpcomingEvents(events);
 
-    return (
-        <div>
-            <h1>Upcoming Events  {upcomingEvents.length}</h1>
-            {upcomingEvents.map(event => (
-                <div key={event.id}>
-                    <h2>{event.title}</h2>
-                    <p>Type: {event.type}</p>
-                    <p>Start: {event.start}</p>
-                    <p>End: {event.end}</p>
-                    <p>Completed: {event.completed ? 'Yes' : 'No'}</p>
-                    {event.reply.map(reply => (
-                        <div key={reply.id}>
-                            <h3>Reply:</h3>
-                            <p>Title: {reply.title}</p>
-                            <p>Type: {reply.type}</p>
-                            <p>Start: {reply.start}</p>
-                            <p>End: {reply.end}</p>
-                            <p>Completed: {reply.completed ? 'Yes' : 'No'}</p>
+    const cour = () => upcomingEvents.map(
+
+        (event) => {
+
+            return(
+                <div className={"p-10"}>
+                    <div key={event.id} className=" bg-blue-400 rounded-[5px] w-auto">
+                    <div className="flex-col justify-start items-start flex p-3">
+                        <div className="text-center text-black text-[40px] font-medium capitalize leading-[30px]">08</div>
+                        <div className="text-center text-black text-xl font-medium capitalize leading-[30px]">jun</div>
+                    </div>
+                    <div className="flex-col justify-end items-start flex p-3">
+                        <div className="text-black text-xl ">
+                            Originally from Lat is simply
                         </div>
-                    ))}
+                        <div className="text-center text-black text-xl font-medium capitalize">@Mr {event.title}</div>
+                    </div>
                 </div>
-            ))}
-        </div>
+                </div>
+            )
+        }
+    )
+
+    return (
+        <HomeTEt></HomeTEt>
     );
 }
 

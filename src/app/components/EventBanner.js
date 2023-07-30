@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import {db} from "@/app/Conf/conf";
+import Slider from "react-slick";
+import {atom} from "jotai";
 
 
 const EventBanner = () => {
-    const [upcomingEvent, setUpcomingEvent] = useState(null);
+    const  [upcomingEvent, setUpcomingEvent] = useState(null);
+
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -31,7 +34,8 @@ const EventBanner = () => {
                 if (!querySnapshot.empty) {
                     const upcomingEventData = querySnapshot.docs.map(doc => doc.data());
                     setUpcomingEvent(upcomingEventData)
-                };
+                }
+                ;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -41,25 +45,41 @@ const EventBanner = () => {
     }, []);
 
     // Function to display the banner if there is an upcoming event
-    const renderEventBanner = () => {
-        if (upcomingEvent) {
-            console.log(upcomingEvent);
-            return (
-                <div>
-                    {upcomingEvent.map((event) => (
-                        <div key={event.id}>
-                            <h3>{event.title}</h3>
-                        </div>
-                    ))}
-                    <p>The event is starting within the next 24 hours!</p>
-                </div>
-            );
-        } else {
-            return null;
-        }
-    };
 
-    return <div>{renderEventBanner()}</div>;
-};
+    const cour = () => upcomingEvent?.map(
+        (event) => {
+            const day = new Date(event.start).getDate();
+            const month = new Date(event.start).toLocaleString('default', { month: 'short' });
+
+            return (
+                <div className={"p-10 flex"}>
+                    <div key={event.id} className=" bg-blue-400 rounded-[5px] ">
+                        <div className="flex-col justify-start items-start flex p-3">
+                            <div
+                                className="text-center text-black text-[40px] font-medium capitalize leading-[30px]">{day}
+                            </div>
+                            <div className="text-center text-black text-xl font-medium capitalize leading-[30px]">{month}
+                            </div>
+                        </div>
+                        <div className="flex-col justify-end items-start flex p-3">
+                            <div className="text-black text-xl ">
+                                {event.title}
+                            </div>
+                            <div
+                                className="text-center text-black text-xl font-medium capitalize">@{event.receiver}</div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    )
+
+    return (
+            <Slider
+                slidesToShow={upcomingEvent?.length}
+                dots={false}>{cour()}</Slider>
+    );
+
+}
 
 export default EventBanner;

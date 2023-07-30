@@ -96,7 +96,7 @@ const ReplyFormExport = ({event}) => {
             {contextHolder}
             <div>
                 <label htmlFor="date" className="block font-medium">
-                    Date:
+                    التاريخ:
                 </label>
                 <input
                     type="date"
@@ -108,7 +108,7 @@ const ReplyFormExport = ({event}) => {
             </div>
             <div>
                 <label htmlFor="receiver" className="block font-medium">
-                    Receiver:
+                    المرسل اليه:
                 </label>
                 <input
                     type="text"
@@ -119,7 +119,7 @@ const ReplyFormExport = ({event}) => {
             </div>
             <div>
                 <label htmlFor="object" className="block font-medium">
-                    Object:
+                    الموضع:
                 </label>
                 <textarea
 
@@ -129,11 +129,11 @@ const ReplyFormExport = ({event}) => {
                     className="block mt-2 w-full  placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-4 h-32 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"/>
             </div>
             <div>
-                <h3 className="font-medium">Notes:</h3>
+                <h3 className="font-medium">ملاحظات:</h3>
                 {formData.notes.map((note, index) => (
                     <div key={index} className="space-y-2">
                         <label htmlFor={`note-${index}`} className="block font-medium">
-                            Note {note.number}:
+                            ملاحظ{note.number}:
                         </label>
                         <input
                             type="date"

@@ -92,7 +92,7 @@ const Cartb =({event}) =>{
             <Menu.Item
                 onClick={() => handleUpdateTodo()}
                 key={event.id} > {
-                currentEvent.completed ?"Not completed": "completed" }
+                event.completed ?"Not completed": "completed" }
             </Menu.Item>
             <Menu.Item key='2'>Delete</Menu.Item>
             <Menu.Item
