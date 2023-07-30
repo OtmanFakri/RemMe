@@ -11,13 +11,13 @@ const { Panel } = Collapse;
 const TabsDetails = ({ event }) => (
 
     <Tabs  onChange={onChange}>
-        <TabPane tab="Details" key={event.id}>
+        <TabPane tab="تفاصيل" key={event.id}>
             {
                 event.type === "Imports" ? <DetailImport values={event} /> : <DetailExport values={event} />
             }
         </TabPane>
 
-        <TabPane tab={"Replay "+event.reply.length} key={2} >
+        <TabPane tab={"اعادتها "+event.reply.length} key={2} >
             {
                 event.reply.map((item)=>{
                     return (
