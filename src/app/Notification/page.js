@@ -102,7 +102,7 @@ const Notification = () => {
                                    </div>
 
                                        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                           <TabsDetails event={event[current]}  />
+                                           <TabsDetails event={upcomingEvent2[current]}  />
 
 
                                        </Modal>
