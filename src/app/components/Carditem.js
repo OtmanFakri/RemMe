@@ -105,7 +105,6 @@ const Cartb =({event}) =>{
                 key="1" > {
                 currentEvent?.completed ?"Not completed": "completed" }
             </Menu.Item>
-            <Menu.Item key='2'>Delete</Menu.Item>
             <Menu.Item
                 onClick={showModal}
                 key='3'>View</Menu.Item>
