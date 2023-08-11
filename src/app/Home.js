@@ -25,6 +25,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ar-kw';
 import EventBanner from "@/app/components/EventBanner";
 import Cartb from "@/app/components/Carditem";
+import NavBar from "@/app/components/NavBar";
 dayjs.locale('ar-kw');
 
 const HomeTEt = () => {
@@ -140,7 +141,7 @@ const HomeTEt = () => {
     return (
         <>
 
-            <EventBanner />
+            <NavBar />
 
             <div className="w-full h-screen flex justify-center items-center">
                 <Calendar

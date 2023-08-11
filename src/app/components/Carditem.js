@@ -44,8 +44,14 @@ const Cartb =({event}) =>{
             content: e.message,
         });
     };
+    
+    useEffect(() => {
+    const currentEvent = Export.find((ev) => ev.id === event.id);
+  },[Export]);
 
     const currentEvent = Export.find((ev) => ev.id === event.id);
+    console.log(setCompleted);
+
 
     const handleUpdateTodo = async () => {
         try {
@@ -53,17 +59,18 @@ const Cartb =({event}) =>{
                 ...currentEvent,
                 completed: !currentEvent.completed,
             };
-
-            await updateExports(currentEvent.id, updateEvent,currentEvent.type); // Wait for the update operation to complete
-
             setCompleted((prev) =>
                 prev.map((ev) => (ev.id === currentEvent.id ? updateEvent : ev))
             );
+
+            await updateExports(currentEvent.id, updateEvent,currentEvent.type); // Wait for the update operation to complete
+            
+
            //setCompleted((old) => old.map((ev) => (ev.id === event.id ? updateEvent : ev)));
             success();
 
         } catch (error) {
-            error(error);
+            console.log(error);
         }
     };
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,13 +93,17 @@ const Cartb =({event}) =>{
     const handleOk = () => {
         setIsModalOpen(false);
     };
+    
+    if (!currentEvent) {
+    const currentEvent = Export.find((ev) => ev.id === event.id);
+  }
 
     const menu = (
         <Menu onClick={handleMenuClick}>
             <Menu.Item
                 onClick={() => handleUpdateTodo()}
-                key={event.id} > {
-                event.completed ?"Not completed": "completed" }
+                key="1" > {
+                currentEvent?.completed ?"Not completed": "completed" }
             </Menu.Item>
             <Menu.Item key='2'>Delete</Menu.Item>
             <Menu.Item
@@ -100,7 +111,7 @@ const Cartb =({event}) =>{
                 key='3'>View</Menu.Item>
             <Menu.Item
                 onClick={
-                currentEvent.type === 'Imports'
+                currentEvent?.type === 'Imports'
                         ? handleImportClick
                         : handleExportClick
                 }
@@ -112,9 +123,9 @@ const Cartb =({event}) =>{
     return(
 
         <div className={`w-full h-[84px] relative rounded-lg ${
-            currentEvent.completed
+            currentEvent?.completed
                 ? 'bg-slate-500'
-                : currentEvent.type === 'Imports'
+                : currentEvent?.type === 'Imports'
                     ? 'bg-green-200'
                     : 'bg-orange-200'
                     
@@ -124,7 +135,7 @@ const Cartb =({event}) =>{
             <div className="w-[225px] left-[15px] top-[15px] absolute flex justify-start items-center">
                 <div className="pr-[9px] flex justify-start items-start">
                     <div className="text-neutral-800 text-sm font-normal leading-none">
-                        {currentEvent.title} - {currentEvent.completed ? "Completed" : "not Completed" }
+                        {event?.title} - {currentEvent?.completed ? "Completed" : "not Completed" }
                     </div>
                 </div>
             </div>
@@ -139,7 +150,7 @@ const Cartb =({event}) =>{
             </div>
 
 
-            <Modal title={currentEvent.title}
+            <Modal title={currentEvent?.title}
                    open={isModalOpen}
                    onCancel={handleOk}
                    footer={null}
@@ -147,7 +158,7 @@ const Cartb =({event}) =>{
                 <TabsDetails event={currentEvent}  />
             </Modal>
 
-            {currentEvent.type === 'Imports' ? (
+            {currentEvent?.type === 'Imports' ? (
                 <Modal
                     title="Reply to Export"
                     footer={null}
