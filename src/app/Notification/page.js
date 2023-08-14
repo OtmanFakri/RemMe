@@ -3,7 +3,7 @@ import NavBar from "@/app/components/NavBar";
 import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, query, updateDoc, where} from "firebase/firestore";
 import {db} from "@/app/Conf/conf";
-import {Modal} from "antd";
+import {message, Modal} from "antd";
 import TabsDetails from "@/app/components/tabsDeatils";
 import {updateExports} from "@/app/Exports /ControllerEcports";
 
@@ -13,9 +13,26 @@ const Notification = () => {
     const  [upcomingEvent2, setUpcomingEvent2] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [islodingUpdate, setislodingUpdate] = useState(false);
+
     const [current, setcurrent] = useState("");
 
     const [selectedOption, setSelectedOption] = useState('All'); // Initialize with the default value
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'This is a success message',
+        });
+    };
+    const error = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'This is an error message',
+        });
+    };
 
     const showModal = (index) => {
         setIsModalOpen(true);
@@ -57,10 +74,17 @@ const Notification = () => {
                 const querySnapshot = await getDocs(q);
                 // Get the upcoming event data (if available)
                 if (!querySnapshot.empty) {
-                    const upcomingEventData = querySnapshot.docs.map(doc => doc.data());
+                    const upcomingEventData = querySnapshot.docs.map((doc) => {
+                        // Access the document ID using the id property of the QueryDocumentSnapshot
+                        const documentId = doc.id;
+                        // Access the document data using the data() method
+                        const eventData = doc.data();
+                        return {
+                            id: documentId,
+                            ...eventData
+                        };
+                    });
                     setUpcomingEvent2(upcomingEventData)
-                    console.log(upcomingEventData)
-
                 };
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -68,23 +92,31 @@ const Notification = () => {
         };
 
         fetchData();
-    }, []);
+    }, [upcomingEvent2]);
     async function handleupdate(event) {
-        const updateEvent = {
-            ...event,
-            completed: !event.completed
+
+        console.log("event : ",event);
+        setislodingUpdate(true);
+
+        const documentRef = doc(db, 'Exports', event.id);
+
+        const updateData = {
+            completed: !event.completed // Update any properties you want to change
         };
 
-        const docRef = doc(db, event.type, event.id);
-
-        await updateDoc(docRef, updateEvent).then(()=>{
-            console.log("update")
-            }
-        )
-
+        updateDoc(documentRef, updateData)
+            .then(() => {
+                console.log('Document updated');
+                success();
+                setislodingUpdate(false);
+            })
+            .catch((error) => {
+                console.error('Error updating document:', error);
+                error();
+                setislodingUpdate(false);
+            });
 
     }
-
     const allEvents = upcomingEvent2; // Your array of all events
     const completedEvents = upcomingEvent2?.filter(event => event.completed);
     const notCompletedEvents = upcomingEvent2?.filter(event => !event.completed);
@@ -103,9 +135,10 @@ const Notification = () => {
 
 
     return(
+
         <>
             <NavBar />
-
+            {contextHolder}
             <div className={"py-10"}>
                 <div className="px-10 my-2 flex sm:flex-row flex-col">
                     <div className=" flex flex-row mb-1 sm:mb-0">
@@ -127,19 +160,6 @@ const Notification = () => {
                                 </svg>
                             </div>
                         </div>
-                    </div>
-                    <div className="block relative">
-                    <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current text-gray-500">
-                            <path
-                                d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
-                            </path>
-                        </svg>
-                    </span>
-                        <input
-                            value={selectedOption}
-                            placeholder="Search"
-                               className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"/>
                     </div>
                 </div>            </div>
            <div>
@@ -180,10 +200,11 @@ const Notification = () => {
                                        <Modal
                                            footer={
                                                <button
-                                                   onClick={()=>handleupdate(upcomingEvent2[current])}
+                                                   onClick={()=>handleupdate(event)}
+                                                   disabled={islodingUpdate}
                                                    type="button"
                                                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                                   {event.completed ? "Completed" : "Not Completed"}
+                                                   {upcomingEvent2[current]?.completed ? "Not Completed" : "Completed"}
                                                </button>
 
                                            }
