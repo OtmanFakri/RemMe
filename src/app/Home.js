@@ -108,14 +108,17 @@ const HomeTEt = () => {
             (event) =>
                 moment(dateString).isBetween(event.start, event.end, 'day', '[]')
         );
+        const allEventsCompleted = eventList.length > 0 && eventList.every(event => event.completed);
 
         return (
             <div>
                 {eventList.map((event, index) => (
-                    <div key={index} className="h-3 w-3 bg-blue-500 rounded-full absolute bottom-1 left-1">
-
-                    </div>
+                    <div key={index} className="h-3 w-3 bg-blue-500 rounded-full absolute bottom-1 left-1"></div>
                 ))}
+
+                {allEventsCompleted && (
+                    <div className="h-3 w-3 bg-gray-800 rounded-full absolute bottom-1 left-1"></div>
+                )}
             </div>
         );
     };
