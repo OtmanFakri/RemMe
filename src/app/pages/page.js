@@ -3,105 +3,75 @@ import "slick-carousel/slick/slick.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import HomeTEt from "@/app/Home";
+import {Button, Form, Input, Modal} from "antd";
+import {useState} from "react";
 
 
-const events = [
-    {
-        id: 1,
-        title: 'Event 11',
-        type: 'Exports',
-        start: '2023-07-31',
-        completed: false,
-        end: '2023-07-27',
-        reply: [
-            {
-                id: 1,
-                title: 'REvent 11',
-                type: 'Exports',
-                start: '2023-07-20',
-                completed: false,
-                end: '2023-07-27'
-            },
-            {
-                id: 2,
-                title: 'REvent 12',
-                type: 'Imports',
-                start: '2023-07-20',
-                completed: false,
-                end: '2023-07-27'
-            }
-        ]
-    },
 
-    {
-        id: 2,
-        title: 'Event 12',
-        type: 'Imports',
-        start: '2023-07-31',
-        completed: false,
-        end: '2023-07-27',
-        reply: [
-            {
-                id: 1,
-                title: 'REvent 11',
-                type: 'Exports',
-                start: '2023-07-20',
-                completed: false,
-                end: '2023-07-27'
-            },
-            {
-                id: 2,
-                title: 'REvent 12',
-                type: 'Imports',
-                start: '2023-07-20',
-                completed: false,
-                end: '2023-07-27'
-            }
-        ]
-    }
-];
+const UpdateButton = () => {
+    const [modalVisible, setModalVisible] = useState(false);
 
-function getUpcomingEvents(events) {
-    const now = new Date();
-    const next24Hours = new Date(now);
-    next24Hours.setHours(next24Hours.getHours() + 24);
+    const showModal = () => {
+        setModalVisible(true);
+    };
 
-    return events.filter(event => {
-        const eventDate = new Date(event.start);
-        return eventDate >= now && eventDate < next24Hours;
-    });
-}
-
-function UpcomingEvents() {
-    const upcomingEvents = getUpcomingEvents(events);
-
-    const cour = () => upcomingEvents.map(
-
-        (event) => {
-
-            return(
-                <div className={"p-10"}>
-                    <div key={event.id} className=" bg-blue-400 rounded-[5px] w-auto">
-                    <div className="flex-col justify-start items-start flex p-3">
-                        <div className="text-center text-black text-[40px] font-medium capitalize leading-[30px]">08</div>
-                        <div className="text-center text-black text-xl font-medium capitalize leading-[30px]">jun</div>
-                    </div>
-                    <div className="flex-col justify-end items-start flex p-3">
-                        <div className="text-black text-xl ">
-                            Originally from Lat is simply
-                        </div>
-                        <div className="text-center text-black text-xl font-medium capitalize">@Mr {event.title}</div>
-                    </div>
-                </div>
-                </div>
-            )
-        }
-    )
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
     return (
-        <HomeTEt></HomeTEt>
+        <>
+            <Button type="primary" onClick={showModal}>
+                Update Data
+            </Button>
+            <UpdateModal visible={modalVisible} onClose={closeModal} />
+        </>
     );
+};
+const UpdateModal = ({ visible, onClose }) => {
+    const handleCancel = () => {
+        onClose();
+    };
+
+    const handleSubmit = (values) => {
+        console.log('Updated data:', values);
+        onClose();
+    };
+
+    return (
+        <Modal
+            title="Update Data"
+            visible={visible}
+            onCancel={handleCancel}
+            footer={null}
+        >
+            <Form onFinish={handleSubmit}>
+                <Form.Item
+                    label="New Data"
+                    name="newData"
+                    rules={[{ required: true, message: 'Please input new data!' }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Update
+                    </Button>
+                </Form.Item>
+            </Form>
+        </Modal>
+    );
+};
+
+function test() {
+    return(
+        <>
+            <div>
+                <h1>Next.js with Ant Design</h1>
+                <UpdateButton />
+            </div>
+        </>
+    )
 }
 
-export default UpcomingEvents;
-
+export default test

@@ -16,6 +16,7 @@ import FormImport from "@/app/components/FormImport";
 import {updateExports} from "@/app/Exports /ControllerEcports";
 import ReplayFormImport from "@/app/components/ReplyFormImport";
 import ReplyFormExport from "@/app/components/ReplyFormExport";
+import UpdateModal from "@/app/components/UpdateDate";
 
 
 
@@ -32,6 +33,15 @@ const Cartb =({event}) =>{
     const setCompleted  = useSetAtom(EventExports2)
     const Export  = useAtomValue(EventExports2)
     const [messageApi, contextHolder] = message.useMessage();
+
+    const [modalupdate, setModalupdate] = useState(false);
+    const showModalupdate = () => {
+        setModalupdate(true);
+    };
+
+    const closeModalupdate = () => {
+        setModalupdate(false);
+    };
     const success = () => {
         messageApi.open({
             type: 'success',
@@ -105,9 +115,17 @@ const Cartb =({event}) =>{
                 key="1" > {
                 currentEvent?.completed ?"Not completed": "completed" }
             </Menu.Item>
+
             <Menu.Item
                 onClick={showModal}
-                key='3'>View</Menu.Item>
+                key='3'>View
+            </Menu.Item>
+
+            <Menu.Item
+                onClick={showModalupdate}
+                key='2'>update
+            </Menu.Item>
+
             <Menu.Item
                 onClick={
                 currentEvent?.type === 'Imports'
@@ -172,6 +190,9 @@ const Cartb =({event}) =>{
                     <ReplayFormImport event={currentEvent}  />
                 </Modal>
             )}
+
+            <UpdateModal visible={modalupdate} onClose={closeModalupdate} DateOld={currentEvent} />
+
         </div>
 
 
